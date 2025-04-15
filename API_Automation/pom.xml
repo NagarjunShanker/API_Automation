@@ -32,7 +32,6 @@
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<version>7.10.2</version>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest -->
@@ -40,7 +39,6 @@
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest</artifactId>
 			<version>3.0</version>
-			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
