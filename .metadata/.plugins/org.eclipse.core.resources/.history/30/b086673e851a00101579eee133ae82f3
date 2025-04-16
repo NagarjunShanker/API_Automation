@@ -1,0 +1,46 @@
+package testScripts;
+
+import org.testng.Assert;
+
+import basePackage.BaseClass;
+import files.Payload;
+import io.restassured.path.json.JsonPath;
+
+public class ComplexJsonResponse extends BaseClass {
+
+	public static void main(String[] args) {
+
+		String validateCourseName = "RPA";
+
+		int sumPrice = 0;
+
+		String comJson = Payload.jsonComplex();
+
+		JsonPath jp = new JsonPath(comJson);
+		
+		System.out.println(p.getList("courses"));
+
+		System.out.println("The number of Courses " + jp.getList("courses").size());
+
+		String purchaseAmount = jp.getString("dashboard.purchaseAmount");
+
+		System.out.println("The Purchase Amount is " + purchaseAmount);
+
+		System.out.println("The title of the first course is " + jp.getString("courses.title[0]"));
+
+		System.out.println("The Courses list and Prices are: ");
+		for (int i = 0; i < jp.getList("courses").size(); i++) {
+			System.out.print("Course: " + jp.getString("courses.title[" + i + "]"));
+			if (jp.getString("courses.title[" + i + "]").equalsIgnoreCase(validateCourseName)) {
+				System.out.print(", Copies: " + jp.getString("courses.copies[" + i + "]"));
+			}
+			System.out.println(", Price: " + jp.getString("courses.price[" + i + "]"));
+
+			sumPrice = sumPrice + (Integer.parseInt(jp.getString("courses.price[" + i + "]"))
+					* Integer.parseInt(jp.getString("courses.copies[" + i + "]")));
+		}
+
+		Assert.assertTrue(Integer.parseInt(purchaseAmount) == sumPrice);
+	}
+
+}

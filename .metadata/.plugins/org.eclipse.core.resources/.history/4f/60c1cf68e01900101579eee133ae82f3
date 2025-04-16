@@ -1,0 +1,13 @@
+package testScripts;
+
+import files.Payload;
+
+public class ComplexJsonResponse {
+
+	public static void main(String[] args) {
+
+		String comJson = Payload.jsonComplex();
+		
+	}
+
+}

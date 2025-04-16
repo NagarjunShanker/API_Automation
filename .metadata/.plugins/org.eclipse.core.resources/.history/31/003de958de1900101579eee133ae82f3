@@ -1,0 +1,32 @@
+package basePackage;
+
+import io.restassured.path.json.JsonPath;
+import io.restassured.specification.RequestSpecification;
+
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
+
+public class BaseClass {
+	
+	/*
+	 * This will parse the string into JSON and fetch the key value using the key path.
+	 * Input : Path of the key in the JSON and the string that need to be parsed to JSON.
+	 * Returns: The Key value path as a string
+	 */
+	public static String fetchValueByParsingStringToJson(String inputString, String pathofKey) {
+		
+		// Creating an object for parsing 
+		JsonPath js = new JsonPath(inputString);
+		return js.getString(pathofKey);
+	}
+	
+	/*
+	 * This method will used to replicate post functionality
+	 * Input: Accepts Base URL, Resource Path, input to post, 
+	 * Returns the response as a string
+	 */
+	
+	public static void performPost(String baseURl, String resourcePath, String input) {
+		RequestSpecification request = given().log().all().queryParam("", "").headers("","");
+	}
+}

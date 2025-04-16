@@ -1,0 +1,30 @@
+package testScripts;
+
+import io.restassured.RestAssured;
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
+
+import basePackage.BaseClass;
+import files.Payload;
+
+public class Post_Method extends BaseClass {
+
+	public static void main(String[] args) {
+
+		// Fetching the Base URl to connect
+		RestAssured.baseURI = "https://rahulshettyacademy.com/";
+		String response = given().log().all().queryParams("key", "qaclick123")
+				.header("Content-Type", "application/json").body(Payload.addPlace()).when()
+				.post("/maps/api/place/add/json").then().assertThat().statusCode(200).body("scope", equalTo("APP"))
+				.extract().response().asString();
+
+		String valueOfKey = fetchValueByParsingStringToJson(response, "place_id");
+
+		System.out.println(valueOfKey);
+
+		// Update the base URL with key and key value
+		given().log().all().queryParam("key", "qaclick123").header("Content-Type", "application/json")
+				.body(Payload.updateApiUsingPlaceID(valueOfKey)).when().put("/maps/api/place/update/json").then().assertThat().statusCode(200).body("msg", equalTo("Address successfully updated"));
+	}
+
+}
