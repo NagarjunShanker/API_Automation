@@ -1,0 +1,17 @@
+package testScripts;
+
+import basePackage.BaseClass;
+import files.Payload;
+
+public class ComplexJsonResponse extends BaseClass {
+
+	public static void main(String[] args) {
+
+		String comJson = Payload.jsonComplex();
+		
+		String response =fetchValueByParsingStringToJson(comJson, "courses");
+		
+		System.out.println(response);
+	}
+
+}

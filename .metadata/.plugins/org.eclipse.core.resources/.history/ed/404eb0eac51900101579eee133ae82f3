@@ -1,0 +1,42 @@
+package files;
+
+public class Payload {
+
+	
+	/*
+	 * This method will fetch the Pay load value to be added to the APi
+	 */
+	
+	public static String addPlace() {
+		return "{\r\n"
+				+ "  \"location\": {\r\n"
+				+ "    \"lat\": -38.383494,\r\n"
+				+ "    \"lng\": 33.427362\r\n"
+				+ "  },\r\n"
+				+ "  \"accuracy\": 50,\r\n"
+				+ "  \"name\": \"Practice_API\",\r\n"
+				+ "  \"phone_number\": \"(+91) 983 893 3937\",\r\n"
+				+ "  \"address\": \"29, side layout, cohen 09\",\r\n"
+				+ "  \"types\": [\r\n"
+				+ "    \"shoe park\",\r\n"
+				+ "    \"shop\"\r\n"
+				+ "  ],\r\n"
+				+ "  \"website\": \"http://google.com\",\r\n"
+				+ "  \"language\": \"French-IN\"\r\n"
+				+ "}\r\n"
+				+ "";
+	}
+	
+	/*
+	 * This method will fetch the pay load value to be updated key and its values.
+	 * Input: the placeID required, which is required to make changes to that API.
+	 * Return : The string value with the update.
+	 */
+	public static String updateKeyandKeyValue(String place_Id) {
+		return "{\r\n"
+				+ "\"place_id\":\""+place_Id+"\",\r\n"
+				+ "\"address\":\"70 winter walk, USA\",\r\n"
+				+ "\"key\":\"qaclick123\"\r\n"
+				+ "}";
+	}
+}

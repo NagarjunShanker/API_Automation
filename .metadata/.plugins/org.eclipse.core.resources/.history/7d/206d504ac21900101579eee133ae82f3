@@ -1,0 +1,18 @@
+package basePackage;
+
+import io.restassured.path.json.JsonPath;
+
+public class BaseClass {
+	
+	/*
+	 * This will parse the string into JSON and fetch the key value using the key path.
+	 * Input : Path of the key in the JSON and the string that need to be parsed to JSON.
+	 * Returns: The Key value path as a string
+	 */
+	public String fetchValueByParsingStringToJson(String pathofKey, String inputString) {
+		
+		// Creating an object for parsing 
+		JsonPath js = new JsonPath(inputString);
+		return js.getString(pathofKey);
+	}
+}

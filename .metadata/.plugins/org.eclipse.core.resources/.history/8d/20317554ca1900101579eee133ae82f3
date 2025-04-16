@@ -1,0 +1,52 @@
+package testScripts;
+
+import io.restassured.RestAssured;
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
+
+import org.testng.Assert;
+
+import basePackage.BaseClass;
+import files.Payload;
+
+public class Post_Method extends BaseClass {
+
+	public static void main(String[] args) {
+
+		// Fetching the Base URl to connect
+		RestAssured.baseURI = "https://rahulshettyacademy.com/";
+		String response = given().log().all().queryParams("key", "qaclick123")
+				.header("Content-Type", "application/json").body(Payload.addPlace()).when()
+				.post("/maps/api/place/add/json").then().assertThat().statusCode(200).body("scope", equalTo("APP"))
+				.extract().response().asString();
+		System.out.println(response);
+		String valueOfKey = fetchValueByParsingStringToJson(response, "place_id");
+		String pushedAddress = fetchValueByParsingStringToJson(response, "address");
+		System.out.println("Pushed Address --> "+ pushedAddress);
+		
+		
+		// Update the base URL with key and key value
+
+		 given().log().all().queryParam("key", "qaclick123")
+				.header("Content-Type", "application/json").body(Payload.updateApiUsingPlaceID(valueOfKey)).when()
+				.put("/maps/api/place/update/json").then().assertThat().statusCode(200)
+				.body("msg", equalTo("Address successfully updated")).extract().response().asString();
+
+
+		// Fetch the API and KeyValue Update.
+
+		 String updatedResponse= given().log().all().queryParam("key", "qaclick123").queryParams("place_id", valueOfKey).header("Content-Type", "application/json").when()
+				.get("/maps/api/place/get/json").then().assertThat().statusCode(200).extract().response().asString();
+		 
+		 String updatedAddress = fetchValueByParsingStringToJson(updatedResponse, "address");
+		 
+		
+		 Assert.assertTrue(!updatedAddress.equalsIgnoreCase(pushedAddress));
+
+		 
+		 System.out.println("Updated Address --> "+ updatedAddress);
+		 
+		 
+	}
+
+}

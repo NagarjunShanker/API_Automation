@@ -1,0 +1,23 @@
+package testScripts;
+
+import basePackage.BaseClass;
+import files.Payload;
+import io.restassured.path.json.JsonPath;
+
+public class ComplexJsonResponse extends BaseClass {
+
+	public static void main(String[] args) {
+
+		String comJson = Payload.jsonComplex();
+		
+		JsonPath jp = new JsonPath(comJson);
+		
+		System.out.println("The number of Courses " +jp.getList("courses").size());
+		
+		System.out.println(jp.getList("dashboard"));
+		
+		
+	
+	}
+
+}

@@ -1,0 +1,21 @@
+package testScripts;
+
+import io.restassured.RestAssured;
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
+
+import files.Payload;
+
+public class Post_Method {
+
+	public static void main(String[] args) {
+
+		// Fetching the Base URl to connect
+		RestAssured.baseURI = "https://rahulshettyacademy.com/";
+		given().log().all().queryParams("key", "qaclick123").header("Content-Type", "application/json")
+				.body(Payload.addPlace()).when().post("/maps/api/place/add/json").then().log().all().assertThat()
+				.statusCode(200).body("scope", equalTo("APP")).header("User-Agent","PostmanRuntime/7.43.3");
+
+	}
+
+}

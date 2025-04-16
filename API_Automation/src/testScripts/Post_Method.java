@@ -1,32 +1,54 @@
 package testScripts;
 
-import io.restassured.RestAssured;
-import static io.restassured.RestAssured.*;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
-public class Post_Method {
+import org.testng.Assert;
+
+import basePackage.BaseClass;
+import files.Payload;
+import io.restassured.RestAssured;
+
+public class Post_Method extends BaseClass {
 
 	public static void main(String[] args) {
+		
 
 		// Fetching the Base URl to connect
 		RestAssured.baseURI = "https://rahulshettyacademy.com/";
-		given().log().all().queryParams("key", "qaclick123").header("Content-Type", "application/json").body("{\r\n"
-				+ "  \"location\": {\r\n"
-				+ "    \"lat\": -38.383494,\r\n"
-				+ "    \"lng\": 33.427362\r\n"
-				+ "  },\r\n"
-				+ "  \"accuracy\": 50,\r\n"
-				+ "  \"name\": \"API_Practice\",\r\n"
-				+ "  \"phone_number\": \"(+91) 983 893 3937\",\r\n"
-				+ "  \"address\": \"29, side layout, cohen 09\",\r\n"
-				+ "  \"types\": [\r\n"
-				+ "    \"shoe park\",\r\n"
-				+ "    \"shop\"\r\n"
-				+ "  ],\r\n"
-				+ "  \"website\": \"http://google.com\",\r\n"
-				+ "  \"language\": \"French-IN\"\r\n"
-				+ "}\r\n"
-				+ "").when().post("/maps/api/place/add/json").then().log().all().assertThat().statusCode(200);
+		String response = given().log().all().queryParams("key", "qaclick123")
+				.header("Content-Type", "application/json").body(Payload.addPlace()).when()
+				.post("/maps/api/place/add/json").then().assertThat().statusCode(200).body("scope", equalTo("APP"))
+				.extract().response().asString();
+		
+		
+		String valueOfKey = fetchValueByParsingStringToJson(response, "place_id");
+		String pushedAddress = fetchValueByParsingStringToJson(Payload.addPlace(), "address");
+		
+		
+		
+		// Update the base URL with key and key value
 
+		 given().log().all().queryParam("key", "qaclick123")
+				.header("Content-Type", "application/json").body(Payload.updateApiUsingPlaceID(valueOfKey)).when()
+				.put("/maps/api/place/update/json").then().assertThat().statusCode(200)
+				.body("msg", equalTo("Address successfully updated")).extract().response().asString();
+
+
+		// Fetch the API and KeyValue Update.
+
+		 String updatedResponse= given().log().all().queryParam("key", "qaclick123").queryParams("place_id", valueOfKey).header("Content-Type", "application/json").when()
+				.get("/maps/api/place/get/json").then().assertThat().statusCode(200).extract().response().asString();
+		 
+		 String updatedAddress = fetchValueByParsingStringToJson(updatedResponse, "address");
+		 
+		
+		 Assert.assertTrue(!updatedAddress.equalsIgnoreCase(pushedAddress));
+
+		 System.out.println("Pushed Address --> "+ pushedAddress);
+		 System.out.println("Updated Address --> "+ updatedAddress);
+		 
+		 
 	}
 
 }
