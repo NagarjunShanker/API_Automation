@@ -1,0 +1,65 @@
+package basePackage;
+
+import io.restassured.path.json.JsonPath;
+import io.restassured.specification.RequestSpecification;
+
+public class BaseClass {
+
+	/*
+	 * This will parse the string into JSON and fetch the key value using the key
+	 * path. Input : Path of the key in the JSON and the string that need to be
+	 * parsed to JSON. Returns: The Key value path as a string
+	 */
+	public static String fetchValueByParsingStringToJson(String inputString, String pathofKey) {
+
+		// Creating an object for parsing
+		JsonPath js = new JsonPath(inputString);
+		return js.getString(pathofKey);
+	}
+
+	/*
+	 * This method will used to replicate post functionality Input: Accepts Base
+	 * URL, Resource Path, input to post, Returns the response as a string
+	 */
+
+	public static String performPost(RequestSpecification request, String resourcePath, String input) {
+		String response = request.body(input).when().post(resourcePath).then().assertThat().statusCode(200).extract()
+				.response().asString();
+		return response;
+	}
+
+	/*
+	 * This method will used to replicate Get functionality Input: Accepts Base URL,
+	 * Resource Path, Returns the response as a string.
+	 */
+
+	public static String performGet(RequestSpecification request,String resourcePath) {
+		String response = request.when().get(resourcePath).then().assertThat().statusCode(200).extract().response()
+				.asString();
+		return response;
+	}
+
+	/*
+	 * This method will used to replicate Put functionality Input: Accepts Base URL,
+	 * Resource Path, Returns the response as a string.
+	 */
+
+	public static String performPut(RequestSpecification request, String resourcePath, String input) {
+		String response = request.body(input).when().put(resourcePath).then().assertThat().statusCode(200).extract()
+				.response().asString();
+		return response;
+	}
+	
+	/*
+	 * This method will used to replicate DELETE functionality Input: Accepts Base URL,
+	 * Resource Path, Returns the response as a string.
+	 */
+
+	public static String performDelete(RequestSpecification request, String resourcePath, String input) {
+		String response = request.body(input).when().delete(resourcePath).then().assertThat().statusCode(200).log().all().extract()
+				.response().asString();
+		return response;
+	}
+	
+
+}

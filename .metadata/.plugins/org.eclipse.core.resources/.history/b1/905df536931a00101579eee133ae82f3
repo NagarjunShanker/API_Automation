@@ -1,0 +1,29 @@
+package testScripts;
+
+import org.testng.annotations.Test;
+
+import basePackage.BaseClass;
+import files.Payload;
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
+	
+import static io.restassured.RestAssured.*;
+
+public class DynamicJson extends BaseClass{
+	
+	@Test
+	public static void addBook() {
+		
+		// Giving the base URL
+		RestAssured.baseURI = "http://216.10.245.166";
+		RequestSpecification req = given().log().all().header("Content-Type", "application/json");
+		String addBookRes = "/Library/Addbook.php";
+		
+		String response = performPost(req,RestAssured.baseURI, addBookRes,Payload.addBook());
+		
+		String reqRes = fetchValueByParsingStringToJson(response, "ID");
+		
+		System.out.println(reqRes);
+		
+	}
+}

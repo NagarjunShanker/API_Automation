@@ -1,0 +1,21 @@
+package testScripts;
+
+import org.testng.annotations.Test;
+
+import io.restassured.RestAssured;
+
+import static io.restassured.RestAssured.*;
+
+public class Jira_API {
+	/*
+	 * This will run a test to create an bug
+	 */
+	@Test
+	public static void createBug() {
+		// The JIRA URL of the project.
+		RestAssured.baseURI = "https://aaaryanstar.atlassian.net/";
+		// Creating an request specification with the header or param specification
+		given()
+		
+	}
+}

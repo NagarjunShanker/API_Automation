@@ -1,0 +1,38 @@
+package testScripts;
+
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import basePackage.BaseClass;
+import files.Payload;
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
+
+import static io.restassured.RestAssured.*;
+
+public class DynamicJson extends BaseClass {
+
+	@Test(dataProvider = "BooksToAdd")
+	public static void addBook(String isbn, String asile) {
+
+		String isbnNum = isbn;
+		String asileNum = asile;
+
+		// Giving the base URL
+		RestAssured.baseURI = "http://216.10.245.166";
+		RequestSpecification req = given().log().all().header("Content-Type", "application/json");
+		String addBookRes = "/Library/Addbook.php";
+
+		String response = performPost(req, addBookRes, Payload.addBook(isbnNum, asileNum));
+
+		String reqRes = fetchValueByParsingStringToJson(response, "ID");
+
+		System.out.println(reqRes);
+
+	}
+	
+	@DataProvider(name="BooksToAdd")
+	public static Object[][] getBookData() {
+		return new Object[][] {{"This is"," test 1"},{"This is "," test 2"},{"This is "," test 3"}};
+	}
+}

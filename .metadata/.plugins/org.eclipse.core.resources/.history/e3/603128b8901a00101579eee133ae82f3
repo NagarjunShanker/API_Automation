@@ -1,0 +1,19 @@
+package testScripts;
+
+import org.testng.annotations.Test;
+
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
+
+import static io.restassured.RestAssured.*;
+
+public class DynamicJson {
+	
+	@Test
+	public static void addBook() {
+		
+		// Giving the base URL
+		RestAssured.baseURI = "http://216.10.245.166";
+		RequestSpecification req = given().header("Content-Type", "application/json");
+	}
+}

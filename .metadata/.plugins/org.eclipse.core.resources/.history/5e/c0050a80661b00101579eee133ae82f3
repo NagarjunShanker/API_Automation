@@ -1,0 +1,25 @@
+package testScripts;
+
+import org.testng.annotations.Test;
+
+import io.restassured.RestAssured;
+
+import static io.restassured.RestAssured.*;
+
+public class Jira_API {
+	
+	// JIRA ENCODED API TOKEN
+	static String token = "Basic YWFhcmF5YW5zdGFyQGdtYWlsLmNvbTpBVEFUVDN4RmZHRjBvMUNMOEpoZ0NMWDQ3VUxUWnZFelFkcXZ0bGdqVUtZOEtqYUlxWVhOWlYtTG1zckhBbmhWV1Via3gzMnA1RU5iWWpGSHp6WlRLbWNva3I1aXV2S3VqOXR4bWJzNFBGMnExSGZMZ180bmMta1BpN0l0Y05hTVBHMHVtaDJoR2NjVW5WemNHRlh1SzBrRkJNenF2T0E4Tlc2TFpCVkM2cFctOGlkcTMyeEh4T289RTI4QUY1NEY=";
+	/*
+	 * This will run a test to create an bug
+	 */
+	@Test
+	public static void createBug() {
+		// The JIRA URL of the project.
+		RestAssured.baseURI = "https://aaaryanstar.atlassian.net/";
+		// Creating an request specification with the header or param specification
+		given().header("Content-Type","application/json").header("Authorization", token);
+		
+		
+	}
+}

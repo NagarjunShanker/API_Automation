@@ -1,5 +1,7 @@
 package basePackage;
 
+import java.io.File;
+
 import io.restassured.path.json.JsonPath;
 import io.restassured.specification.RequestSpecification;
 
@@ -14,7 +16,7 @@ public class BaseClass {
 
 		// Creating an object for parsing
 		JsonPath js = new JsonPath(inputString);
-		return js.getString(pathofKey);
+		return js.getString(pathofKey).toString();
 	}
 
 	/*
@@ -22,7 +24,7 @@ public class BaseClass {
 	 * URL, Resource Path, input to post, Returns the response as a string
 	 */
 
-	public static String performPost(RequestSpecification request, String baseURl, String resourcePath, String input) {
+	public static String performPost(RequestSpecification request, String resourcePath, String input) {
 		String response = request.body(input).when().post(resourcePath).then().assertThat().statusCode(200).extract()
 				.response().asString();
 		return response;
@@ -33,7 +35,7 @@ public class BaseClass {
 	 * Resource Path, Returns the response as a string.
 	 */
 
-	public static String performGet(RequestSpecification request, String baseURl, String resourcePath) {
+	public static String performGet(RequestSpecification request, String resourcePath) {
 		String response = request.when().get(resourcePath).then().assertThat().statusCode(200).extract().response()
 				.asString();
 		return response;
@@ -44,10 +46,65 @@ public class BaseClass {
 	 * Resource Path, Returns the response as a string.
 	 */
 
-	public static String performPut(RequestSpecification request, String baseURl, String resourcePath, String input) {
+	public static String performPut(RequestSpecification request, String resourcePath, String input) {
 		String response = request.body(input).when().put(resourcePath).then().assertThat().statusCode(200).extract()
 				.response().asString();
 		return response;
 	}
 
+	/*
+	 * This method will used to replicate DELETE functionality Input: Accepts Base
+	 * URL, Resource Path, Returns the response as a string.
+	 */
+
+	public static String performDelete(RequestSpecification request, String resourcePath, String input) {
+		String response = request.body(input).when().delete(resourcePath).then().assertThat().statusCode(200).log()
+				.all().extract().response().asString();
+		return response;
+	}
+
+	/*
+	 * This method will handle the creation of the issue in JIRA Input:
+	 * RequestSpecification, resourcePath, BodyInput. Returns the response in string
+	 * format
+	 */
+	public static String bugCreation(RequestSpecification request, String resourcePath, String bodyInput) {
+		String response = request.body(bodyInput).when().post(resourcePath).then().assertThat().statusCode(201).log()
+				.all().extract().response().asString();
+
+		return response;
+	}
+
+	/*
+	 * This method will handle the functionality of attaching and attachment to an
+	 * BUG/ISSUE Input: Request specification like headers, File path of the
+	 * attachment, resourcePath of the API, provide bugID. Returns the response in
+	 * string format
+	 */
+	public static String addAttachment(RequestSpecification request, String filePath, String resourcePath) {
+		String response = request.when().multiPart("file", new File(filePath)).log().all().post(resourcePath).then()
+				.assertThat().statusCode(200).log().all().extract().response().asString();
+		return response;
+	}
+
+	/*
+	 * This method will handle the functionality of deleting the screenshot based on
+	 * the input of the screenshot id, when the screenshot is attached to it and
+	 * returns the response in string.
+	 */
+	public static String deleteScreenshot(RequestSpecification request, String screenshotID) {
+		String response = request.when().delete("/rest/api/3/attachment/" + screenshotID + "").then().assertThat()
+				.statusCode(204).log().all().extract().response().asString();
+		return response;
+	}
+
+	/*
+	 * This method will handle the functionality of getting the issue based on the
+	 * input from the issue id and returns the response as a string.
+	 */
+	public static String getIssue(RequestSpecification request, String issueID) {
+		String response = request.when().get("/rest/api/3/issue/" + issueID + "").then().log().all().statusCode(200)
+				.extract().response().getBody().asString();
+		return response;
+	}
 }

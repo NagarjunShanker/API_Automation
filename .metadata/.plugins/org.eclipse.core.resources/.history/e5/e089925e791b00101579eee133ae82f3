@@ -1,0 +1,75 @@
+package testScripts;
+
+import org.testng.annotations.Test;
+
+import basePackage.BaseClass;
+import files.Payload;
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
+
+import static io.restassured.RestAssured.*;
+
+public class Jira_API extends BaseClass {
+
+	// JIRA ENCODED API TOKEN
+	static String token = "Basic YWFhcmF5YW5zdGFyQGdtYWlsLmNvbTpBVEFUVDN4RmZHRjBvMUNMOEpoZ0NMWDQ3VUxUWnZFelFkcXZ0bGdqVUtZOEtqYUlxWVhOWlYtTG1zckhBbmhWV1Via3gzMnA1RU5iWWpGSHp6WlRLbWNva3I1aXV2S3VqOXR4bWJzNFBGMnExSGZMZ180bmMta1BpN0l0Y05hTVBHMHVtaDJoR2NjVW5WemNHRlh1SzBrRkJNenF2T0E4Tlc2TFpCVkM2cFctOGlkcTMyeEh4T289RTI4QUY1NEY=";
+	static String reporterID = "712020:3de58f80-3e2b-4055-b953-74d8a8c9c48a";
+	static String projectKey = "API";
+	static String issueID = "";
+	static String screenshotID= "";
+	/*
+	 * This will run a test to create an bug
+	 */
+	@Test
+	public static void createBug() {
+
+		String summary = "This is a automated generated api bug";
+		String description = "Able to successfully create a bug with automated API, for JIRA";
+		String resourcePath = "/rest/api/3/issue";
+		// The JIRA URL of the project.
+		RestAssured.baseURI = "https://aaaryanstar.atlassian.net/";
+		// Creating an request specification with the header or param specification
+		RequestSpecification request = given().header("Content-Type", "application/json").header("Authorization",
+				token);
+		// This is the input for the body to the api call.
+		String bodyInput = Payload.createBug(projectKey, summary, description, reporterID);
+		// Call the API and capture it response
+		String response = bugCreation(request, resourcePath, bodyInput);
+		// Now parsing the string into JSON to fetch the ID of the issue.
+		issueID = fetchValueByParsingStringToJson(response, "key");
+	}
+
+	/*
+	 * This will run a test to attach and attachment to already created bug
+	 */
+	@Test(dependsOnMethods = "createBug")
+	public static void addAttachment() {
+
+		String pathOfFile = ".\\ScreenShot\\Screenshot_20250307_145315_Nile Nav.jpg";
+		// The JIRA URL of the project
+		RestAssured.baseURI = "https://aaaryanstar.atlassian.net/";
+		// Creating a request with specification
+		RequestSpecification request = given().log().all().header("X-Atlassian-Token", "no-check").header("Authorization", token);
+		// Creating an dynamic resource path with the Issue id
+		String resourcePath = "/rest/api/3/issue/"+issueID+"/attachments";
+		// Call the API and capture it response
+		String response = addAttachment(request, pathOfFile, resourcePath);
+		// Now parsing the string into JSON to fetch the ID of the issue.
+		screenshotID  = fetchValueByParsingStringToJson(response, "id");
+		
+	}
+	
+	/*
+	 * This will run a test to delete the attachment
+	 */
+	@Test(dependsOnMethods = "addAttachment")
+	public static void deleteAttachment() {
+		
+		// The JIRA URL of the project
+		RestAssured.baseURI = "https://aaaryanstar.atlassian.net/";
+		// Creating a request with specification
+		RequestSpecification  request =given().log().all().header("Authorization", token);
+		String response = deleteScreenshot(request, screenshotID);
+		System.out.println(response);
+	}
+}

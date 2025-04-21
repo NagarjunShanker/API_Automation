@@ -1,0 +1,59 @@
+package testScripts;
+
+import org.testng.Assert;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import basePackage.BaseClass;
+import files.Payload;
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
+
+import static io.restassured.RestAssured.*;
+
+public class DynamicJson extends BaseClass {
+
+	/*
+	 * This test will be conducted to add the books and verify the add is
+	 * successful. Using the DataProvider the input of books is provided.
+	 */
+	@Test(dataProvider = "BooksToAdd")
+	public static void addBook(String isbn, String asile) {
+
+		String isbnNum = isbn;
+		String asileNum = asile;
+
+		// Giving the base URL
+		RestAssured.baseURI = "http://216.10.245.166";
+		RequestSpecification req = given().log().all().header("Content-Type", "application/json");
+		String addBookRes = "/Library/Addbook.php";
+
+		String response = performPost(req, addBookRes, Payload.addBook(isbnNum, asileNum));
+
+		String reqRes = fetchValueByParsingStringToJson(response, "ID");
+
+		System.out.println(reqRes);
+
+		String requiredMsg = isbnNum + asileNum;
+
+		Assert.assertEquals(requiredMsg, reqRes);
+
+		// Creating an resource file path to delete
+		String reqRespath = "/Library/DeleteBook.php";
+
+		// Calling the delete function from the base class
+		String resp = performDelete(req, reqRespath, Payload.deleteBook(reqRes));
+
+		// Calling the jsonParse method from base class
+		String respMsg = fetchValueByParsingStringToJson(resp, "msg");
+
+		Assert.assertEquals(respMsg, "book is successfully deleted");
+
+	}
+
+	@DataProvider(name = "BooksToAdd")
+	public static Object[][] getBookData() {
+		return new Object[][] { { "This is", " test 1" }, { "This is ", " test 2" }, { "This is ", " test 3" } };
+	}
+
+}
